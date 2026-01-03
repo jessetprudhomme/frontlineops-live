@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrontlineOps V6.2.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --surface: #f8f9fa;
+            --border: #dee2e6;
+            --text: #212529;
+            --text-muted: #6c757d;
+            --primary: #0d6efd;
+            --success: #198754;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --zero-cost: #4caf50;
+            --soft-cost: #ffc107;
+            --hard-cost: #ff9800;
+            --high-stakes: #f44336;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        header {
+            background: var(--surface);
+            border-bottom: 2px solid var(--border);
+            padding: 16px 24px;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .cost-reality-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .cost-zero { background: var(--zero-cost); color: white; }
+        .cost-soft { background: var(--soft-cost); color: #000; }
+        .cost-hard { background: var(--hard-cost); color: white; }
+        .cost-high { background: var(--high-stakes); color: white; }
+
+        .space-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .space-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .space-card.active {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+
+        .ledger-entry {
+            padding: 12px;
+            border-left: 3px solid var(--border);
+            margin-bottom: 12px;
+            background: white;
+        }
+
+        .ledger-entry .timestamp {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .ledger-entry .event-type {
+            font-weight: 600;
+            margin: 4px 0;
+        }
+
+        .support-panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+        }
+
+        .support-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .support-item:last-child {
+            border-bottom: none;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .action-card .action-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .action-card .action-prereqs {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .approval-required {
+            background: #fff3cd;
+            border: 2px solid var(--warning);
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .approval-required-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔧 FrontlineOps V6.2.0</h1>
+        <div class="subtitle">Space-based operational environment</div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('spaces')">Spaces</button>
+            <button class="tab" onclick="switchTab('ledger')">Ledger</button>
+            <button class="tab" onclick="switchTab('actions')">Action Registry</button>
+        </div>
+
+        <!-- Spaces Tab -->
+        <div class="tab-content active" id="spaces-tab">
+            <div class="card">
+                <div class="card-header">Open New Space</div>
+                <div class="input-group">
+                    <label>Address / Location *</label>
+                    <input type="text" id="space-address" placeholder="123 Main Street, City, State">
+                </div>
+                <div class="input-group">
+                    <label>Space Type</label>
+                    <select id="space-type">
+                        <option value="physical-site">Physical Site (Default)</option>
+                        <option value="project">Project</option>
+                        <option value="event">Event</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="createSpace()">Open Space</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Active Spaces</div>
+                <div id="spaces-list"></div>
+            </div>
+        </div>
+
+        <!-- Ledger Tab -->
+        <div class="tab-content" id="ledger-tab">
+            <div class="card">
+                <div class="card-header">Immutable Ledger</div>
+                <div id="ledger-list"></div>
+            </div>
+        </div>
+
+        <!-- Actions Tab -->
+        <div class="tab-content" id="actions-tab">
+            <div class="card">
+                <div class="card-header">Action Registry</div>
+                <div id="actions-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Space Detail Modal -->
+    <div class="modal" id="space-modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 id="modal-space-name">Space Details</h2>
+                <button class="btn btn-secondary" onclick="closeSpaceModal()">Close</button>
+            </div>
+
+            <div class="tabs" style="margin-bottom: 16px;">
+                <button class="tab active" onclick="switchSpaceTab('overview')">Overview</button>
+                <button class="tab" onclick="switchSpaceTab('actions')">Actions</button>
+                <button class="tab" onclick="switchSpaceTab('support')">Support</button>
+            </div>
+
+            <!-- Overview -->
+            <div class="tab-content active" id="space-overview">
+                <div id="space-details-content"></div>
+            </div>
+
+            <!-- Actions -->
+            <div class="tab-content" id="space-actions">
+                <div id="space-actions-content"></div>
+            </div>
+
+            <!-- Support -->
+            <div class="tab-content" id="space-support">
+                <div class="support-panel" id="space-support-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FrontlineOps V6.2.0 - Core Implementation
+
+        // Storage Key
+        const STORAGE_KEY = 'frontlineops_v6.2.0';
+
+        // State
+        let state = {
+            spaces: [],
+            ledger: [],
+            actionRegistry: [],
+            participants: [],
+            currentSpace: null
+        };
+
+        // Initialize
+        function init() {
+            loadState();
+            initializeActionRegistry();
+            render();
+        }
+
+        // State Management
+        function loadState() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                state = JSON.parse(stored);
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        // Action Registry - Spec-defined actions
+        function initializeActionRegistry() {
+            if (state.actionRegistry.length === 0) {
+                state.actionRegistry = [
+                    {
+                        id: 'create_space',
+                        name: 'Create Space',
+                        classification: 'space_management',
+                        costReality: 'ZERO_COST',
+                        prerequisites: [],
+                        effects: 'Opens a new operational space',
+                        supportRequired: false,
+                        approvalRequired: false,
+                        reversible: false
+                    },
+                    {
+                        id: 'close_space',
+                        name: 'Close Space',
+                        classification: 'space_management',
+                        costReality: 'SOFT_COST',
+                        prerequisites: ['space_exists'],
+                        effects: 'Closes active space, preserves ledger',
+                        supportRequired: false,
+                        approvalRequired: true,
+                        reversible: false
+                    },
+                    {
+                        id: 'allocate_cash',
+                        name: 'Allocate Cash Support',
+                        classification: 'support',
+                        costReality: 'HARD_COST',
+                        prerequisites: ['space_exists'],
+                        effects: 'Allocates cash to space support',
+                        supportRequired: true,
+                        approvalRequired: true,
+                        reversible: true
+                    },
+                    {
+                        id: 'authorize_participant',
+                        name: 'Authorize Participant Support',
+                        classification: 'participant',
+                        costReality: 'SOFT_COST',
+                        prerequisites: ['space_exists', 'participant_exists'],
+                        effects: 'Authorizes participant to contribute support',
+                        supportRequired: false,
+                        approvalRequired: true,
+                        reversible: true
+                    },
+                    {
+                        id: 'log_activity',
+                        name: 'Log Activity',
+                        classification: 'record',
+                        costReality: 'ZERO_COST',
+                        prerequisites: ['space_exists'],
+                        effects: 'Records activity in ledger',
+                        supportRequired: false,
+                        approvalRequired: false,
+                        reversible: false
+                    }
+                ];
+                saveState();
+            }
+        }
+
+        // Ledger - Immutable
+        function addLedgerEntry(entry) {
+            const ledgerEntry = {
+                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                timestamp: new Date().toISOString(),
+                ...entry
+            };
+            state.ledger.push(ledgerEntry);
+            saveState();
+            return ledgerEntry;
+        }
+
+        // Space Management
+        function createSpace() {
+            const address = document.getElementById('space-address').value;
+            const type = document.getElementById('space-type').value;
+
+            if (!address.trim()) {
+                alert('Address is required');
+                return;
+            }
+
+            const space = {
+                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                address: address,
+                type: type,
+                createdAt: new Date().toISOString(),
+                status: 'active',
+                support: {
+                    cash: 0,
+                    allocatedCapacity: 0,
+                    volunteerSupport: 0,
+                    deferredObligations: 0,
+                    externalSponsorship: 0
+                },
+                participants: [],
+                actions: []
+            };
+
+            state.spaces.push(space);
+            
+            addLedgerEntry({
+                type: 'SPACE_CREATED',
+                spaceId: space.id,
+                data: {
+                    address: space.address,
+                    type: space.type
+                }
+            });
+
+            saveState();
+            
+            document.getElementById('space-address').value = '';
+            render();
+            alert('Space opened successfully!');
+        }
+
+        function openSpace(spaceId) {
+            const space = state.spaces.find(s => s.id === spaceId);
+            if (!space) return;
+
+            state.currentSpace = spaceId;
+            document.getElementById('modal-space-name').textContent = space.address;
+            
+            renderSpaceDetails(space);
+            renderSpaceActions(space);
+            renderSpaceSupport(space);
+            
+            document.getElementById('space-modal').classList.add('active');
+        }
+
+        function closeSpaceModal() {
+            document.getElementById('space-modal').classList.remove('active');
+            state.currentSpace = null;
+        }
+
+        function renderSpaceDetails(space) {
+            const content = document.getElementById('space-details-content');
+            content.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <strong>Address:</strong> ${space.address}
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <strong>Type:</strong> ${space.type}
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <strong>Status:</strong> <span style="color: var(--success);">${space.status}</span>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <strong>Created:</strong> ${new Date(space.createdAt).toLocaleString()}
+                </div>
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-danger" onclick="closeSpace('${space.id}')">Close Space</button>
+                </div>
+            `;
+        }
+
+        function renderSpaceActions(space) {
+            const content = document.getElementById('space-actions-content');
+            const availableActions = state.actionRegistry.filter(action => {
+                return checkPrerequisites(action, space);
+            });
+
+            if (availableActions.length === 0) {
+                content.innerHTML = '<div class="empty-state">No actions available for this space.</div>';
+                return;
+            }
+
+            content.innerHTML = availableActions.map(action => `
+                <div class="action-card">
+                    <div class="action-name">${action.name}</div>
+                    <div class="action-prereqs">${action.effects}</div>
+                    <div style="margin: 12px 0;">
+                        <span class="cost-reality-badge cost-${action.costReality.toLowerCase().replace('_', '-')}">
+                            ${getCostEmoji(action.costReality)} ${action.costReality.replace('_', ' ')}
+                        </span>
+                    </div>
+                    ${action.approvalRequired ? '<div class="approval-required"><div class="approval-required-title">⚠️ Requires Approval</div>This action requires explicit human approval before execution.</div>' : ''}
+                    <button class="btn btn-primary" onclick="executeAction('${action.id}', '${space.id}')">
+                        Execute Action
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderSpaceSupport(space) {
+            const content = document.getElementById('space-support-content');
+            content.innerHTML = `
+                <div class="support-item">
+                    <span>💵 Cash</span>
+                    <strong>$${space.support.cash.toFixed(2)}</strong>
+                </div>
+                <div class="support-item">
+                    <span>📊 Allocated Capacity</span>
+                    <strong>${space.support.allocatedCapacity} hrs</strong>
+                </div>
+                <div class="support-item">
+                    <span>🤝 Volunteer Support</span>
+                    <strong>${space.support.volunteerSupport} hrs</strong>
+                </div>
+                <div class="support-item">
+                    <span>📅 Deferred Obligations</span>
+                    <strong>$${space.support.deferredObligations.toFixed(2)}</strong>
+                </div>
+                <div class="support-item">
+                    <span>🎁 External Sponsorship</span>
+                    <strong>$${space.support.externalSponsorship.toFixed(2)}</strong>
+                </div>
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" onclick="allocateSupport('${space.id}')">Allocate Support</button>
+                </div>
+            `;
+        }
+
+        function checkPrerequisites(action, space) {
+            if (action.prerequisites.length === 0) return true;
+            
+            for (let prereq of action.prerequisites) {
+                if (prereq === 'space_exists' && !space) return false;
+                if (prereq === 'space_active' && space.status !== 'active') return false;
+            }
+            return true;
+        }
+
+        function getCostEmoji(costReality) {
+            const map = {
+                'ZERO_COST': '🟩',
+                'SOFT_COST': '🟨',
+                'HARD_COST': '🟧',
+                'HIGH_STAKES': '🟥'
+            };
+            return map[costReality] || '⬜';
+        }
+
+        function executeAction(actionId, spaceId) {
+            const action = state.actionRegistry.find(a => a.id === actionId);
+            const space = state.spaces.find(s => s.id === spaceId);
+
+            if (!action || !space) return;
+
+            // Approval gate
+            if (action.approvalRequired) {
+                const approved = confirm(`⚠️ APPROVAL REQUIRED\n\nAction: ${action.name}\nCost Reality: ${action.costReality}\nEffects: ${action.effects}\n\nDo you approve execution?`);
+                if (!approved) {
+                    addLedgerEntry({
+                        type: 'ACTION_REJECTED',
+                        spaceId: spaceId,
+                        actionId: actionId,
+                        data: { reason: 'User rejected approval' }
+                    });
+                    alert('Action rejected.');
+                    return;
+                }
+            }
+
+            // Execute
+            space.actions.push({
+                actionId: actionId,
+                executedAt: new Date().toISOString()
+            });
+
+            addLedgerEntry({
+                type: 'ACTION_EXECUTED',
+                spaceId: spaceId,
+                actionId: actionId,
+                data: {
+                    actionName: action.name,
+                    costReality: action.costReality
+                }
+            });
+
+            saveState();
+            alert(`✅ Action "${action.name}" executed successfully!`);
+            renderSpaceActions(space);
+            render();
+        }
+
+        function closeSpace(spaceId) {
+            const confirmed = confirm('Are you sure you want to close this space? This action is irreversible.');
+            if (!confirmed) return;
+
+            const space = state.spaces.find(s => s.id === spaceId);
+            if (!space) return;
+
+            space.status = 'closed';
+
+            addLedgerEntry({
+                type: 'SPACE_CLOSED',
+                spaceId: spaceId,
+                data: {
+                    address: space.address,
+                    closedAt: new Date().toISOString()
+                }
+            });
+
+            saveState();
+            closeSpaceModal();
+            render();
+            alert('Space closed.');
+        }
+
+        function allocateSupport(spaceId) {
+            const amount = prompt('Enter cash amount to allocate:');
+            if (!amount || isNaN(amount)) return;
+
+            const space = state.spaces.find(s => s.id === spaceId);
+            if (!space) return;
+
+            const approved = confirm(`⚠️ APPROVAL REQUIRED\n\nAllocate $${parseFloat(amount).toFixed(2)} to space?\n\nThis is a HARD_COST action.`);
+            if (!approved) return;
+
+            space.support.cash += parseFloat(amount);
+
+            addLedgerEntry({
+                type: 'SUPPORT_ALLOCATED',
+                spaceId: spaceId,
+                data: {
+                    type: 'cash',
+                    amount: parseFloat(amount)
+                }
+            });
+
+            saveState();
+            renderSpaceSupport(space);
+            alert('Support allocated successfully!');
+        }
+
+        // Render Functions
+        function render() {
+            renderSpaces();
+            renderLedger();
+            renderActionRegistry();
+        }
+
+        function renderSpaces() {
+            const list = document.getElementById('spaces-list');
+            
+            if (state.spaces.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏗️</div><div>No spaces opened yet. Create your first space above.</div></div>';
+                return;
+            }
+
+            list.innerHTML = state.spaces.map(space => `
+                <div class="space-card" onclick="openSpace('${space.id}')">
+                    <div style="font-weight: 600; margin-bottom: 8px;">${space.address}</div>
+                    <div style="font-size: 13px; color: var(--text-muted);">
+                        Type: ${space.type} | Status: ${space.status} | Created: ${new Date(space.createdAt).toLocaleDateString()}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderLedger() {
+            const list = document.getElementById('ledger-list');
+            
+            if (state.ledger.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><div>Ledger is empty. All actions will be recorded here.</div></div>';
+                return;
+            }
+
+            list.innerHTML = state.ledger.slice().reverse().map(entry => `
+                <div class="ledger-entry">
+                    <div class="timestamp">${new Date(entry.timestamp).toLocaleString()}</div>
+                    <div class="event-type">${entry.type}</div>
+                    <div style="font-size: 13px; color: var(--text-muted);">
+                        ${entry.spaceId ? 'Space: ' + (state.spaces.find(s => s.id === entry.spaceId)?.address || entry.spaceId) : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderActionRegistry() {
+            const list = document.getElementById('actions-list');
+            
+            list.innerHTML = state.actionRegistry.map(action => `
+                <div class="action-card">
+                    <div class="action-name">${action.name}</div>
+                    <div class="action-prereqs"><strong>Classification:</strong> ${action.classification}</div>
+                    <div class="action-prereqs"><strong>Effects:</strong> ${action.effects}</div>
+                    <div class="action-prereqs"><strong>Prerequisites:</strong> ${action.prerequisites.length > 0 ? action.prerequisites.join(', ') : 'None'}</div>
+                    <div style="margin: 12px 0;">
+                        <span class="cost-reality-badge cost-${action.costReality.toLowerCase().replace('_', '-')}">
+                            ${getCostEmoji(action.costReality)} ${action.costReality.replace('_', ' ')}
+                        </span>
+                    </div>
+                    <div style="font-size: 13px;">
+                        ${action.approvalRequired ? '✓ Requires Approval | ' : ''}
+                        ${action.reversible ? 'Reversible' : 'Irreversible'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        function switchSpaceTab(tabName) {
+            document.querySelectorAll('#space-modal .tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('#space-modal .tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('space-' + tabName).classList.add('active');
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
