@@ -421,6 +421,17 @@
             width: 100px;
         }
         
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .input-field::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+        
         /* Activity Log */
         .activity-log {
             background: var(--bg-secondary);
@@ -604,7 +615,7 @@
         
         <div class="overlay" id="overlay"></div>
         
-        <aside>
+        <aside class="collapsed">
             <nav>
                 <div class="nav-section">
                     <div class="nav-section-title">Monitoring</div>
@@ -884,6 +895,53 @@
                     </div>
                 </div>
                 
+                <div class="settings-section">
+                    <div class="settings-header">
+                        <span>🔧</span>
+                        Backend Configuration
+                    </div>
+                    
+                    <div class="setting-row">
+                        <div class="setting-label">
+                            <div class="setting-title">OpenAI API Key</div>
+                            <div class="setting-description">API key for GPT-4 Vision testing</div>
+                        </div>
+                        <input type="password" class="input-field" style="width: 200px;" id="openai-key" placeholder="sk-proj-..." data-setting="openai_api_key">
+                    </div>
+                    
+                    <div class="setting-row">
+                        <div class="setting-label">
+                            <div class="setting-title">Gmail Address</div>
+                            <div class="setting-description">Email for receiving test reports</div>
+                        </div>
+                        <input type="email" class="input-field" style="width: 200px;" id="gmail-user" placeholder="jesse.t.prudhomme@gmail.com" data-setting="gmail_user">
+                    </div>
+                    
+                    <div class="setting-row">
+                        <div class="setting-label">
+                            <div class="setting-title">GitHub Token</div>
+                            <div class="setting-description">Personal access token for deployments</div>
+                        </div>
+                        <input type="password" class="input-field" style="width: 200px;" id="github-token" placeholder="ghp_..." data-setting="github_token">
+                    </div>
+                    
+                    <div class="setting-row">
+                        <div class="setting-label">
+                            <div class="setting-title">GitHub Repository</div>
+                            <div class="setting-description">Format: username/repo-name</div>
+                        </div>
+                        <input type="text" class="input-field" style="width: 200px;" id="github-repo" placeholder="jessetprudhomme/frontlineops-live" data-setting="github_repo">
+                    </div>
+                    
+                    <div class="setting-row">
+                        <div class="setting-label">
+                            <div class="setting-title">Live Site URL</div>
+                            <div class="setting-description">GitHub Pages URL for testing</div>
+                        </div>
+                        <input type="url" class="input-field" style="width: 300px;" id="live-url" placeholder="https://jessetprudhomme.github.io/frontlineops-live" data-setting="live_url">
+                    </div>
+                </div>
+                
                 <button class="btn" style="margin-top: 20px;" onclick="saveSettings()">💾 Save Settings</button>
             </div>
             
@@ -1068,8 +1126,47 @@
         }
         
         // Settings
-        function saveSettings() {
-            alert('Settings saved! (Backend integration needed)');
+        async function saveSettings() {
+            // Collect all settings
+            const settings = {
+                autonomous_testing: {
+                    enabled: document.querySelector('[data-setting="autonomous_testing.enabled"]').classList.contains('active'),
+                    use_gpt4: document.querySelector('[data-setting="autonomous_testing.use_gpt4"]').classList.contains('active'),
+                    schedule_hours: parseInt(document.querySelector('[data-setting="autonomous_testing.schedule_hours"]').value),
+                    pause_during_iteration: document.querySelector('[data-setting="autonomous_testing.pause_during_iteration"]').classList.contains('active')
+                },
+                forge_builder: {
+                    email_driven: document.querySelector('[data-setting="forge_builder.email_driven"]').classList.contains('active'),
+                    auto_deploy: document.querySelector('[data-setting="forge_builder.auto_deploy"]').classList.contains('active'),
+                    wait_for_tests: document.querySelector('[data-setting="forge_builder.wait_for_tests"]').classList.contains('active')
+                },
+                backend: {
+                    openai_api_key: document.getElementById('openai-key').value,
+                    gmail_user: document.getElementById('gmail-user').value,
+                    github_token: document.getElementById('github-token').value,
+                    github_repo: document.getElementById('github-repo').value,
+                    live_url: document.getElementById('live-url').value
+                }
+            };
+            
+            // Show modal
+            showModal('Settings saved! (Backend integration needed)', JSON.stringify(settings, null, 2));
+        }
+        
+        function showModal(title, content) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+            modal.innerHTML = `
+                <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+                    <h2 style="margin-bottom: 16px;">${title}</h2>
+                    <pre style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.5;">${content}</pre>
+                    <button class="btn" style="margin-top: 16px; width: 100%;" onclick="this.closest('div').parentElement.remove()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
         }
         
         // Toggle switches
@@ -1104,20 +1201,37 @@
             overlay.classList.toggle('active');
         }
         
+        // Initialize sidebar state on load
+        function initializeSidebar() {
+            if (window.innerWidth <= 768) {
+                // On mobile: start collapsed
+                sidebar.classList.add('collapsed');
+                overlay.classList.remove('active');
+            } else {
+                // On desktop: start open
+                sidebar.classList.remove('collapsed');
+                overlay.classList.remove('active');
+            }
+        }
+        
         menuToggle.addEventListener('click', toggleMenu);
         overlay.addEventListener('click', toggleMenu);
         
         // Close menu when nav item clicked on mobile
-        if (window.innerWidth <= 768) {
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (window.innerWidth <= 768) {
-                        sidebar.classList.add('collapsed');
-                        overlay.classList.remove('active');
-                    }
-                });
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.add('collapsed');
+                    overlay.classList.remove('active');
+                }
             });
-        }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', initializeSidebar);
+        
+        // Initialize on load
+        initializeSidebar();
         
         // Start polling
         loadState();
