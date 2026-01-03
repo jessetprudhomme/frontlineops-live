@@ -3,1421 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forge Collaboration Hub | FrontlineOps V6.3.1</title>
+    <meta name="description" content="Forge Hub - FrontlineOps Control Center">
+    <title>Forge Hub | FrontlineOps V6.3.1</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkZvcmdlIEh1YiIsCiAgInNob3J0X25hbWUiOiAiRm9yZ2UiLAogICJzdGFydF91cmwiOiAiL2h1Yi5odG1sIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGEwZTE3IiwKICAidGhlbWVfY29sb3IiOiAiI2VjNDA3YSIKfQ==">
     <style>
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         :root {
-            --bg-primary: #0a0e17;
-            --bg-secondary: #151923;
-            --bg-tertiary: #1e2433;
-            --border: #2a3447;
-            --text-primary: #e8eaed;
-            --text-secondary: #9aa0b0;
-            --accent-green: #4caf50;
-            --accent-blue: #2196f3;
-            --accent-orange: #ff9800;
-            --accent-red: #f44336;
-            --accent-yellow: #ffc107;
-            --accent-pink: #e91e63;
-            --accent-purple: #9c27b0;
+            --bg: #0a0e17; --surface: #1e293b; --border: #334155;
+            --text: #f1f5f9; --text-secondary: #94a3b8;
+            --primary: #3b82f6; --success: #10b981; --danger: #ef4444;
+            --pink: #ec407a;
         }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg); color: var(--text); min-height: 100vh;
         }
-        
-        .container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            grid-template-rows: 60px 1fr;
-            height: 100vh;
+        .header {
+            background: linear-gradient(135deg, var(--pink) 0%, #d81b60 100%);
+            padding: 20px 32px; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 3px solid var(--pink);
         }
-        
-        /* Header */
-        header {
-            grid-column: 1 / -1;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 24px;
-            cursor: pointer;
-            padding: 8px;
-            line-height: 1;
-        }
-        
-        .logo { font-size: 20px; font-weight: 700; }
-        
+        .logo { font-size: 24px; font-weight: 700; color: white; }
         .version-badge {
-            background: var(--accent-blue);
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
+            background: rgba(255,255,255,0.2); color: white;
+            padding: 6px 12px; border-radius: 20px; font-size: 12px;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
         }
-        
+        .version-badge:hover { background: rgba(255,255,255,0.3); }
         .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-green);
-            animation: pulse 2s infinite;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--success); animation: pulse 2s infinite;
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+        .alert {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white; padding: 16px 24px; border-radius: 12px;
+            margin-bottom: 24px; font-weight: 500;
         }
-        
-        /* Sidebar */
-        aside {
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            padding: 16px 0;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
-        
-        /* Desktop: sidebar always visible */
-        aside.collapsed {
-            transform: none;
-        }
-        
-        .nav-section {
-            margin-bottom: 24px;
-        }
-        
-        .nav-section-title {
-            padding: 8px 24px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            letter-spacing: 0.5px;
-        }
-        
-        .nav-btn {
-            width: 100%;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            padding: 12px 24px;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.2s;
-            position: relative;
-        }
-        
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .nav-btn.active {
-            background: rgba(33, 150, 243, 0.1);
-            color: var(--accent-blue);
-        }
-        
-        .nav-btn.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--accent-blue);
-        }
-        
-        .icon {
-            font-size: 18px;
-            width: 18px;
-            text-align: center;
-        }
-        
-        .badge {
-            margin-left: auto;
-            background: var(--accent-red);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        
-        /* Main Content */
-        main {
-            overflow-y: auto;
-            padding: 32px;
-        }
-        
-        .view {
-            display: none;
-        }
-        
-        .view.active {
-            display: block;
-        }
-        
-        /* Status Cards */
-        .status-grid {
+        .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
+            gap: 20px; margin-bottom: 32px;
         }
-        
-        .status-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.2s;
+        .card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; transition: all 0.2s;
         }
-        
-        .status-card:hover {
-            border-color: var(--accent-blue);
-            transform: translateY(-2px);
+        .card:hover { border-color: var(--primary); }
+        .card-title { font-size: 13px; color: var(--text-secondary);
+            margin-bottom: 8px; text-transform: uppercase; font-weight: 600;
         }
-        
-        .status-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
+        .card-value { font-size: 32px; font-weight: 700; margin-bottom: 4px; }
+        .card-label { font-size: 13px; color: var(--text-secondary); }
+        .section {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; margin-bottom: 20px;
         }
-        
-        .status-card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .status-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            position: relative;
-        }
-        
-        .status-indicator.active {
-            background: var(--accent-green);
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-        }
-        
-        .status-indicator.idle {
-            background: var(--text-secondary);
-        }
-        
-        .status-indicator.testing {
-            background: var(--accent-blue);
-            animation: pulse 2s infinite;
-        }
-        
-        .status-indicator.error {
-            background: var(--accent-red);
-        }
-        
-        .status-indicator {
-            font-size: 14px;
-            margin-left: 8px;
-        }
-        
-        .status-card-value {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .status-card-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-        
-        /* System Status */
-        .system-status {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 32px;
-        }
-        
-        .system-status-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-        }
-        
-        .system-status-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
-        
-        .coordination-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        
-        .process-card {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-        }
-        
-        .process-card.active {
-            border-color: var(--accent-green);
-            background: rgba(76, 175, 80, 0.05);
-        }
-        
-        .process-card.locked {
-            border-color: var(--accent-yellow);
-            background: rgba(255, 193, 7, 0.05);
-        }
-        
-        .process-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .process-icon {
-            font-size: 24px;
-        }
-        
-        .process-name {
-            font-weight: 600;
-            flex: 1;
-        }
-        
-        .process-status {
-            font-size: 12px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-        
-        .process-status.running {
-            background: var(--accent-green);
-            color: white;
-        }
-        
-        .process-status.waiting {
-            background: var(--accent-yellow);
-            color: #000;
-        }
-        
-        .process-status.idle {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-        }
-        
-        .process-meta {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-        }
-        
-        /* Settings Panel */
-        .settings-section {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-        
-        .settings-header {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .setting-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .setting-row:last-child {
-            border-bottom: none;
-        }
-        
-        .setting-label {
-            flex: 1;
-        }
-        
-        .setting-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .setting-description {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        
-        .toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 26px;
-            background: var(--bg-tertiary);
-            border-radius: 13px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .toggle-switch.active {
-            background: var(--accent-green);
-        }
-        
-        .toggle-slider {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s;
-        }
-        
-        .toggle-switch.active .toggle-slider {
-            transform: translateX(22px);
-        }
-        
-        .input-field {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            width: 100px;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-        }
-        
-        .input-field::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.5;
-        }
-        
-        /* Activity Log */
-        .activity-log {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-        }
-        
-        .log-entry {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            gap: 16px;
-        }
-        
-        .log-entry:last-child {
-            border-bottom: none;
-        }
-        
-        .log-time {
-            font-size: 12px;
-            color: var(--text-secondary);
-            min-width: 80px;
-        }
-        
-        .log-message {
-            flex: 1;
-        }
-        
-        .log-type {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        
-        .log-type.info {
-            background: rgba(33, 150, 243, 0.2);
-            color: var(--accent-blue);
-        }
-        
-        .log-type.success {
-            background: rgba(76, 175, 80, 0.2);
-            color: var(--accent-green);
-        }
-        
-        .log-type.warning {
-            background: rgba(255, 152, 0, 0.2);
-            color: var(--accent-orange);
-        }
-        
-        .log-type.error {
-            background: rgba(244, 67, 54, 0.2);
-            color: var(--accent-red);
-        }
-        
-        /* Preview iframe */
-        .preview-container {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            height: calc(100vh - 200px);
-        }
-        
-        .preview-header {
-            padding: 16px 24px;
-            background: var(--bg-tertiary);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .preview-iframe {
-            width: 100%;
-            height: calc(100% - 60px);
-            border: none;
-        }
-        
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
         .btn {
-            background: var(--accent-blue);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
+            background: var(--primary); color: white; border: none;
+            padding: 12px 24px; border-radius: 8px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; margin: 4px;
         }
-        
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        .btn:hover { background: #2563eb; transform: translateY(-1px); }
+        .btn-pink { background: var(--pink); }
+        .btn-pink:hover { background: #d81b60; }
+        .activity-item {
+            padding: 10px; background: rgba(59,130,246,0.1);
+            border-radius: 6px; margin-bottom: 8px; font-size: 13px;
+            border-left: 3px solid var(--primary);
         }
-        
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
+        .activity-time { color: var(--text-secondary); font-size: 11px; margin-top: 4px; }
+        .timestamp {
+            text-align: center; color: var(--text-secondary);
+            font-size: 12px; margin-top: 20px;
         }
-        
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
-            
-            aside {
-                position: fixed;
-                left: 0;
-                top: 60px;
-                bottom: 0;
-                width: 280px;
-                z-index: 1000;
-                box-shadow: 2px 0 12px rgba(0, 0, 0, 0.5);
-            }
-            
-            /* On mobile: collapsed means hidden */
-            aside.collapsed {
-                transform: translateX(-100%);
-            }
-            
-            main {
-                padding: 16px;
-            }
-            
-            .status-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .coordination-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .preview-container {
-                height: calc(100vh - 300px);
-            }
-            
-            .logo {
-                font-size: 16px;
-            }
-            
-            .version-badge {
-                font-size: 10px;
-                padding: 3px 8px;
-            }
+        .loading { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .notification {
+            position: fixed; top: 80px; right: 20px; background: var(--surface);
+            border: 1px solid var(--primary); border-radius: 8px; padding: 16px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3); z-index: 1000;
+            animation: slideIn 0.3s ease-out;
         }
-        
-        /* Overlay for mobile menu */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+        @keyframes slideIn { from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-        
-        .overlay.active {
-            display: block;
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); z-index: 2000; align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--surface); border-radius: 12px; padding: 28px;
+            max-width: 500px; width: 90%; border: 1px solid var(--border);
+        }
+        .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+        .input {
+            width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; color: var(--text); font-size: 14px; margin-bottom: 12px;
+        }
+        .input:focus { outline: none; border-color: var(--primary); }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-                ☰
-            </button>
-            <div class="logo-section">
-                <div class="logo">⚡ Forge Hub</div>
-                <div class="version-badge" id="versionBadge" title="Click to see last update">
-                    V6.3.1
-                </div>
-                <div class="status-dot"></div>
-            </div>
-        </header>
-        <div class="overlay" id="overlay"></div>
-        
-        <aside id="sidebar">
-            <nav>
-                <div class="nav-section">
-                    <div class="nav-section-title">Monitoring</div>
-                    <button class="nav-btn active" data-view="dashboard">
-                        <span class="icon">📊</span>
-                        Dashboard
-                    </button>
-                    <button class="nav-btn" data-view="coordination">
-                        <span class="icon">🔄</span>
-                        System Status
-                    </button>
-                    <button class="nav-btn" data-view="testing">
-                        <span class="icon">🧪</span>
-                        Testing
-                        <span class="badge" id="test-badge" style="display:none;">0</span>
-                    </button>
-                </div>
-                
-                <div class="nav-section">
-                    <div class="nav-section-title">Configuration</div>
-                    <button class="nav-btn" data-view="settings">
-                        <span class="icon">⚙️</span>
-                        Settings
-                    </button>
-                </div>
-                
-                <div class="nav-section">
-                    <div class="nav-section-title">Activity</div>
-                    <button class="nav-btn" data-view="activity">
-                        <span class="icon">📝</span>
-                        Activity Log
-                    </button>
-                    <button class="nav-btn" data-view="preview">
-                        <span class="icon">👁️</span>
-                        Live Preview
-                    </button>
-                </div>
-            </nav>
-        </aside>
-        
-        <main>
-            <!-- Dashboard View -->
-            <div id="dashboard" class="view active">
-                <h1 style="margin-bottom: 32px;">Dashboard</h1>
-                
-                <div class="status-grid">
-                    <div class="status-card">
-                        <div class="status-card-header">
-                            <div class="status-card-title">Current Iteration</div>
-                            <div class="status-indicator active"></div>
-                        </div>
-                        <div class="status-card-value" id="current-iteration">8</div>
-                        <div class="status-card-label">of 20 total</div>
-                    </div>
-                    
-                    <div class="status-card">
-                        <div class="status-card-header">
-                            <div class="status-card-title">Tests Passed</div>
-                            <div class="status-indicator idle"></div>
-                        </div>
-                        <div class="status-card-value" id="tests-passed">0</div>
-                        <div class="status-card-label">Phase A: 0/50</div>
-                    </div>
-                    
-                    <div class="status-card">
-                        <div class="status-card-header">
-                            <div class="status-card-title">Version</div>
-                            <div class="status-indicator active"></div>
-                        </div>
-                        <div class="status-card-value" id="code-version">V6.2.8</div>
-                        <div class="status-card-label" id="phase-status">INIT Phase</div>
-                    </div>
-                    
-                    <div class="status-card">
-                        <div class="status-card-header">
-                            <div class="status-card-title">Auto-Deploy</div>
-                            <div class="status-indicator active"></div>
-                        </div>
-                        <div class="status-card-value">✅</div>
-                        <div class="status-card-label">GitHub Pages Active</div>
-                    </div>
-                </div>
-                
-                <div class="system-status">
-                    <div class="system-status-header">
-                        <div class="system-status-title">🎯 Current Task</div>
-                    </div>
-                    <div id="current-task" style="font-size: 16px; color: var(--text-secondary);">
-                        Autonomous cycle complete - V6.2.8 deployed
-                    </div>
-                </div>
-            </div>
-            
-            <!-- System Status View -->
-            <div id="coordination" class="view">
-                <h1 style="margin-bottom: 32px;">System Coordination</h1>
-                
-                <div class="system-status">
-                    <div class="system-status-header">
-                        <div class="system-status-title">⚡ Process Status</div>
-                    </div>
-                    
-                    <div class="coordination-grid">
-                        <div class="process-card" id="forge-card">
-                            <div class="process-header">
-                                <div class="process-icon">🔨</div>
-                                <div class="process-name">Forge Builder</div>
-                                <div class="process-status idle" id="forge-status">IDLE</div>
-                            </div>
-                            <div class="process-meta" id="forge-meta">
-                                Last activity: 2 minutes ago<br>
-                                Status: Ready for next iteration
-                            </div>
-                        </div>
-                        
-                        <div class="process-card" id="tester-card">
-                            <div class="process-header">
-                                <div class="process-icon">🧪</div>
-                                <div class="process-name">Autonomous Tester</div>
-                                <div class="process-status idle" id="tester-status">IDLE</div>
-                            </div>
-                            <div class="process-meta" id="tester-meta">
-                                Next scheduled: 4 hours<br>
-                                Status: GPT-4 Vision enabled
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 24px; padding: 16px; background: var(--bg-tertiary); border-radius: 8px;">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                            <span style="font-weight: 600;">🔐 Coordination Lock</span>
-                            <span id="lock-status" style="color: var(--text-secondary);">No active locks</span>
-                        </div>
-                        <div id="queue-status" style="font-size: 13px; color: var(--text-secondary);">
-                            Queue: Empty
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Testing View -->
-            <div id="testing" class="view">
-                <h1 style="margin-bottom: 32px;">Autonomous Testing</h1>
-                
-                <div class="status-grid">
-                    <div class="status-card">
-                        <div class="status-card-header">
-                            <div class="status-card-title">Last Test Run</div>
-                            <div class="status-indicator idle"></div>
-                        </div>
-                        <div class="status-card-value" id="last-test-time">-</div>
-                        <div class="status-card-label">Never run</div>
-                    </div>
-                    
-                    <div class="status-card">
-                        <div class="status-card-header">
-                            <div class="status-card-title">Issues Found</div>
-                            <div class="status-indicator idle"></div>
-                        </div>
-                        <div class="status-card-value" id="issues-count">0</div>
-                        <div class="status-card-label">Total issues</div>
-                    </div>
-                    
-                    <div class="status-card">
-                        <div class="status-card-header">
-                            <div class="status-card-title">GPT-4 Vision</div>
-                            <div class="status-indicator active"></div>
-                        </div>
-                        <div class="status-card-value">✓</div>
-                        <div class="status-card-label">Enabled</div>
-                    </div>
-                    
-                    <div class="status-card">
-                        <div class="status-card-header">
-                            <div class="status-card-title">Next Run</div>
-                            <div class="status-indicator active"></div>
-                        </div>
-                        <div class="status-card-value" id="next-test">4h</div>
-                        <div class="status-card-label">Auto-scheduled</div>
-                    </div>
-                </div>
-                
-                <div class="system-status">
-                    <div class="system-status-header">
-                        <div class="system-status-title">🧪 Test Results</div>
-                        <button class="btn" onclick="runManualTest()">▶️ Run Test Now</button>
-                    </div>
-                    <div id="test-results" style="padding: 20px; text-align: center; color: var(--text-secondary);">
-                        No test results yet. Click "Run Test Now" to start.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Settings View -->
-            <div id="settings" class="view">
-                <h1 style="margin-bottom: 32px;">Settings</h1>
-                
-                <div class="settings-section">
-                    <div class="settings-header">
-                        <span>🧪</span>
-                        Autonomous Testing
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Enable Testing</div>
-                            <div class="setting-description">Automatically test UI on schedule</div>
-                        </div>
-                        <div class="toggle-switch active" data-setting="autonomous_testing.enabled">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Use GPT-4 Vision</div>
-                            <div class="setting-description">Enable AI-powered visual analysis</div>
-                        </div>
-                        <div class="toggle-switch active" data-setting="autonomous_testing.use_gpt4">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Test Schedule</div>
-                            <div class="setting-description">How often to run tests (hours)</div>
-                        </div>
-                        <input type="number" class="input-field" value="6" min="1" max="24" data-setting="autonomous_testing.schedule_hours">
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Pause During Iterations</div>
-                            <div class="setting-description">Don't test while Forge is building</div>
-                        </div>
-                        <div class="toggle-switch active" data-setting="autonomous_testing.pause_during_iteration">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <div class="settings-header">
-                        <span>🔨</span>
-                        Forge Builder
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Email-Driven Builds</div>
-                            <div class="setting-description">Process UI feedback from emails</div>
-                        </div>
-                        <div class="toggle-switch active" data-setting="forge_builder.email_driven">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Auto-Deploy</div>
-                            <div class="setting-description">Deploy to GitHub Pages automatically</div>
-                        </div>
-                        <div class="toggle-switch active" data-setting="forge_builder.auto_deploy">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Wait for Tests</div>
-                            <div class="setting-description">Wait for test results before deploying</div>
-                        </div>
-                        <div class="toggle-switch active" data-setting="forge_builder.wait_for_tests">
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <div class="settings-header">
-                        <span>🔧</span>
-                        Backend Configuration
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">OpenAI API Key <span class="status-indicator" id="openai-status">❌</span></div>
-                            <div class="setting-description">API key for GPT-4 Vision testing</div>
-                        </div>
-                        <input type="password" class="input-field" style="width: 250px;" id="openai-key" placeholder="Leave blank to keep current" data-setting="openai_api_key">
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Gmail Address <span class="status-indicator" id="gmail-status">❌</span></div>
-                            <div class="setting-description">Email for receiving test reports</div>
-                        </div>
-                        <input type="email" class="input-field" style="width: 250px;" id="gmail-user" placeholder="Leave blank to keep current" data-setting="gmail_user">
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">GitHub Token <span class="status-indicator" id="github-token-status">❌</span></div>
-                            <div class="setting-description">Personal access token for deployments</div>
-                        </div>
-                        <input type="password" class="input-field" style="width: 250px;" id="github-token" placeholder="Leave blank to keep current" data-setting="github_token">
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">GitHub Repository <span class="status-indicator" id="github-repo-status">❌</span></div>
-                            <div class="setting-description">Format: username/repo-name</div>
-                        </div>
-                        <input type="text" class="input-field" style="width: 250px;" id="github-repo" placeholder="Leave blank to keep current" data-setting="github_repo">
-                    </div>
-                    
-                    <div class="setting-row">
-                        <div class="setting-label">
-                            <div class="setting-title">Live Site URL <span class="status-indicator" id="live-url-status">❌</span></div>
-                            <div class="setting-description">GitHub Pages URL for testing</div>
-                        </div>
-                        <input type="url" class="input-field" style="width: 300px;" id="live-url" placeholder="Leave blank to keep current" data-setting="live_url">
-                    </div>
-                </div>
-                
-                <button class="btn" style="margin-top: 20px;" onclick="saveSettings()">💾 Save Settings</button>
-            </div>
-            
-            <!-- Activity Log View -->
-            <div id="activity" class="view">
-                <h1 style="margin-bottom: 32px;">Activity Log</h1>
-                
-                <div class="activity-log">
-                    <div id="activity-log-content">
-                        <!-- Populated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Preview View -->
-            <div id="preview" class="view">
-                <h1 style="margin-bottom: 32px;">Live Preview</h1>
-                
-                <div class="preview-container">
-                    <div class="preview-header">
-                        <div>
-                            <strong>CODE_<span id="preview-version">V6.2.8</span></strong>
-                            <span style="color: var(--text-secondary); margin-left: 12px;">⚡ Just Updated</span>
-                        </div>
-                        <div style="display: flex; gap: 12px;">
-                            <button class="btn btn-secondary" onclick="refreshPreview()">🔄 Refresh</button>
-                            <button class="btn" onclick="openInNewTab()">↗️ Open in New Tab</button>
-                        </div>
-                    </div>
-                    <iframe id="preview-iframe" class="preview-iframe" src="frontlineops.html"></iframe>
-                </div>
-            </div>
-        </main>
+    <div class="header">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="logo">🔨 Forge Hub</div>
+            <div class="version-badge" id="versionBadge">V6.3.1</div>
+            <div class="status-dot" id="statusDot"></div>
+        </div>
+        <div style="color: white; font-weight: 500; font-size: 13px;">HYBRID SYSTEM</div>
     </div>
     
+    <div class="container">
+        <div class="alert">
+            ✨ <strong>Smart Communication:</strong> Auto-routes commands via fastest available method 
+            (GitHub Issues ⚡ 3s, Email 📧 30s)
+        </div>
+        
+        <div id="content" class="loading">Loading live data...</div>
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+    
+    <!-- Command Modal -->
+    <div class="modal" id="commandModal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">Confirm Command</div>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeModal()" style="background: #64748b;">Cancel</button>
+                <button class="btn btn-pink" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
     
     <script>
-        let state = null;
-        let pollInterval = null;
+
+        // Configuration
+        const CONFIG = {
+            github: {
+                user: 'jessetprudhomme',
+                repo: 'frontlineops-live',
+                apiBase: 'https://api.github.com',
+                rawBase: 'https://raw.githubusercontent.com'
+            },
+            email: {
+                to: 'jesse.t.prudhomme@gmail.com',
+                subject: '[FrontlineOps]'
+            },
+            refreshInterval: 10000 // 10 seconds
+        };
         
-        // Initialize everything when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initializing Forge Hub...');
+        let state = null;
+        let lastUpdate = null;
+        let githubToken = localStorage.getItem('github_token');
+        
+        // Smart command router with auto-fallback
+        async function sendCommand(command) {
+            console.log('📤 Sending command:', command);
             
-            // Get DOM elements
-            const menuToggle = document.getElementById('menuToggle');
-            const sidebar = document.querySelector('aside');
-            const overlay = document.getElementById('overlay');
-            const navButtons = document.querySelectorAll('.nav-btn');
-            const versionBadge = document.getElementById('versionBadge');
+            // ALWAYS use email for now (GitHub webhooks need backend setup)
+            // GitHub token detection removed - using reliable email method
+            sendViaEmail(command);
+            showNotification('📧 Email opened - please send!\n\nForge will process in ~60 seconds', 'info');
             
-            console.log(`Found ${navButtons.length} navigation buttons`);
-            
-            // Update version badge with timestamp on click
-            if (versionBadge) {
-                versionBadge.style.cursor = 'pointer';
-                let showingTimestamp = false;
-                versionBadge.addEventListener('click', async function() {
-                    if (!showingTimestamp) {
-                        try {
-                            const response = await fetch('state.json?_=' + Date.now());
-                            const data = await response.json();
-                            const lastUpdate = data.last_updated || data.deployment?.last_deployed;
-                            if (lastUpdate) {
-                                const date = new Date(lastUpdate);
-                                versionBadge.textContent = date.toLocaleString('en-US', {
-                                    month: 'short', day: 'numeric', 
-                                    hour: '2-digit', minute: '2-digit'
-                                });
-                                showingTimestamp = true;
-                                setTimeout(() => {
-                                    versionBadge.textContent = 'V6.3.1';
-                                    showingTimestamp = false;
-                                }, 3000);
-                            }
-                        } catch(e) {
-                            console.error('Failed to load timestamp:', e);
-                        }
-                    }
-                });
-            }
-            
-            // Navigation view switching
-            navButtons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const view = btn.dataset.view;
-                    console.log('🎯 Switching to view:', view);
-                    
-                    // Update active nav button
-                    navButtons.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    // Update active view
-                    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                    const targetView = document.getElementById(view);
-                    if (targetView) {
-                        targetView.classList.add('active');
-                        console.log('✅ View switched to:', view);
-                    } else {
-                        console.error('❌ View not found:', view);
-                    }
-                    
-                    // Close mobile menu if open
-                    if (window.innerWidth <= 768) {
-                        sidebar.classList.add('collapsed');
-                        overlay.classList.remove('active');
-                    }
-                });
+            // Show helper message
+            setTimeout(() => {
+                showNotification('💡 Tip: Email method is reliable and works everywhere!', 'info');
+            }, 2000);
+        }
+        
+        // Method 1: Repository Dispatch (webhook)
+        async function sendViaRepositoryDispatch(command) {
+            const url = `${CONFIG.github.apiBase}/repos/${CONFIG.github.user}/${CONFIG.github.repo}/dispatches`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${githubToken}`,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event_type: command.action.toLowerCase().replace('_', '-'),
+                    client_payload: command
+                })
             });
             
-            // Mobile menu toggle
-            function toggleMenu() {
-                sidebar.classList.toggle('collapsed');
-                overlay.classList.toggle('active');
-                console.log('Menu toggled');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
             
-            if (menuToggle) {
-                menuToggle.addEventListener('click', toggleMenu);
-            }
-            if (overlay) {
-                overlay.addEventListener('click', toggleMenu);
-            }
-            
-            // Sidebar initialization
-            function initializeSidebar() {
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.add('collapsed');
-                    overlay.classList.remove('active');
-                } else {
-                    sidebar.classList.remove('collapsed');
-                    overlay.classList.remove('active');
-                }
-            }
-            
-            window.addEventListener('resize', initializeSidebar);
-            initializeSidebar();
-            
-            // Start app
-            loadState();
-            loadBackendStatus();
-            pollInterval = setInterval(loadState, 2000);
-            
-            console.log('✅ Forge Hub initialized successfully');
-        });
+            console.log('✅ Repository dispatch sent');
+        }
         
-        // Load state
-        async function loadState() {
+        // Method 2: GitHub Issue
+        async function sendViaGitHubIssue(command) {
+            const url = `${CONFIG.github.apiBase}/repos/${CONFIG.github.user}/${CONFIG.github.repo}/issues`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${githubToken}`,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: `[COMMAND] ${command.action}`,
+                    body: '```json\n' + JSON.stringify(command, null, 2) + '\n```',
+                    labels: ['forge-command']
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const issue = await response.json();
+            console.log('✅ GitHub issue created:', issue.number);
+        }
+        
+        // Method 3: Email
+        function sendViaEmail(command) {
+            const subject = `${CONFIG.email.subject} ${command.action}`;
+            const body = JSON.stringify(command, null, 2);
+            window.location.href = `mailto:${CONFIG.email.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+        
+        // Fetch state from GitHub
+        async function fetchState() {
             try {
-                const response = await fetch('state.json?_=' + Date.now());
+                const url = `${CONFIG.github.rawBase}/${CONFIG.github.user}/${CONFIG.github.repo}/main/state.json?_=${Date.now()}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
                 state = await response.json();
+                lastUpdate = new Date();
                 updateUI();
+                document.getElementById('statusDot').style.background = '#10b981';
             } catch (error) {
-                console.error('Failed to load state:', error);
+                console.error('Fetch error:', error);
+                document.getElementById('statusDot').style.background = '#ef4444';
+                showError(error.message);
             }
         }
         
+        // Update UI
         function updateUI() {
             if (!state) return;
             
-            // Dashboard
-            document.getElementById('current-iteration').textContent = state.iteration?.current || 0;
-            document.getElementById('tests-passed').textContent = state.tests?.phase_a?.passing || 0;
-            document.getElementById('code-version').textContent = 'V' + (state.version?.code || '6.2.8');
-            document.getElementById('phase-status').textContent = (state.iteration?.phase || 'INIT') + ' Phase';
-            document.getElementById('current-task').textContent = state.forge_status?.current_task || 'Ready';
+            const iteration = state.iteration?.current || 0;
+            const tests = state.tests?.phase_a?.passing || 0;
+            const version = `V${state.version?.code || '6.3.1'}`;
+            const phase = state.iteration?.phase || 'INIT';
+            const task = state.forge_status?.current_task || 'Ready';
             
-            // Coordination
-            updateCoordinationStatus();
-            
-            // Activity Log
-            updateActivityLog();
-            
-            // Testing
-            updateTestingStatus();
-        }
-        
-        function updateCoordinationStatus() {
-            const forgeCard = document.getElementById('forge-card');
-            const testerCard = document.getElementById('tester-card');
-            const forgeStatus = document.getElementById('forge-status');
-            const testerStatus = document.getElementById('tester-status');
-            
-            const activeProcess = state.coordination?.active_process;
-            
-            // Reset
-            forgeCard.classList.remove('active', 'locked');
-            testerCard.classList.remove('active', 'locked');
-            
-            if (activeProcess === 'forge') {
-                forgeCard.classList.add('active');
-                testerCard.classList.add('locked');
-                forgeStatus.textContent = 'RUNNING';
-                forgeStatus.className = 'process-status running';
-                testerStatus.textContent = 'WAITING';
-                testerStatus.className = 'process-status waiting';
-            } else if (activeProcess === 'tester') {
-                testerCard.classList.add('active');
-                forgeCard.classList.add('locked');
-                testerStatus.textContent = 'RUNNING';
-                testerStatus.className = 'process-status running';
-                forgeStatus.textContent = 'WAITING';
-                forgeStatus.className = 'process-status waiting';
-            } else {
-                forgeStatus.textContent = 'IDLE';
-                forgeStatus.className = 'process-status idle';
-                testerStatus.textContent = 'IDLE';
-                testerStatus.className = 'process-status idle';
+            let activityHTML = '';
+            if (state.build_log && Array.isArray(state.build_log)) {
+                activityHTML = state.build_log.slice(-8).reverse().map(log => {
+                    const time = new Date(log.timestamp).toLocaleString();
+                    return `
+                        <div class="activity-item">
+                            ${log.event}
+                            <div class="activity-time">${time}</div>
+                        </div>
+                    `;
+                }).join('');
             }
             
-            // Lock status
-            const lockStatus = document.getElementById('lock-status');
-            if (activeProcess) {
-                lockStatus.textContent = `Locked by ${activeProcess}`;
-                lockStatus.style.color = 'var(--accent-yellow)';
-            } else {
-                lockStatus.textContent = 'No active locks';
-                lockStatus.style.color = 'var(--text-secondary)';
-            }
+            const commMethod = '📧 Email (Reliable)';
             
-            // Queue
-            const queueStatus = document.getElementById('queue-status');
-            const queueLength = state.coordination?.queue?.length || 0;
-            if (queueLength > 0) {
-                queueStatus.textContent = `Queue: ${queueLength} waiting`;
-            } else {
-                queueStatus.textContent = 'Queue: Empty';
-            }
-        }
-        
-        function updateActivityLog() {
-            const container = document.getElementById('activity-log-content');
-            const logs = state.build_log || [];
-            
-            container.innerHTML = logs.slice(-20).reverse().map(log => {
-                const time = new Date(log.timestamp).toLocaleTimeString();
-                let type = 'info';
-                if (log.event.includes('✅')) type = 'success';
-                if (log.event.includes('⚠️')) type = 'warning';
-                if (log.event.includes('❌')) type = 'error';
-                
-                return `
-                    <div class="log-entry">
-                        <div class="log-time">${time}</div>
-                        <div class="log-message">${log.event}</div>
-                        <div class="log-type ${type}">${type.toUpperCase()}</div>
+            document.getElementById('content').innerHTML = `
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-title">Current Iteration</div>
+                        <div class="card-value">${iteration}</div>
+                        <div class="card-label">of 20 total (${Math.round(iteration/20*100)}%)</div>
                     </div>
-                `;
-            }).join('');
-        }
-        
-        function updateTestingStatus() {
-            const testStatus = state.test_status;
-            if (!testStatus) return;
-            
-            // Update last test time
-            if (testStatus.last_run) {
-                const lastRun = new Date(testStatus.last_run);
-                const now = new Date();
-                const diffMinutes = Math.floor((now - lastRun) / 60000);
-                document.getElementById('last-test-time').textContent = diffMinutes + 'm';
-            }
-            
-            // Update issues count
-            document.getElementById('issues-count').textContent = testStatus.issues_found || 0;
-            
-            // Update next run
-            if (testStatus.next_scheduled) {
-                const nextRun = new Date(testStatus.next_scheduled);
-                const now = new Date();
-                const diffHours = Math.floor((nextRun - now) / 3600000);
-                document.getElementById('next-test').textContent = diffHours + 'h';
-            }
-        }
-        
-        // Settings
-        async function saveSettings() {
-            // Collect all settings
-            const settings = {
-                autonomous_testing: {
-                    enabled: document.querySelector('[data-setting="autonomous_testing.enabled"]').classList.contains('active'),
-                    use_gpt4: document.querySelector('[data-setting="autonomous_testing.use_gpt4"]').classList.contains('active'),
-                    schedule_hours: parseInt(document.querySelector('[data-setting="autonomous_testing.schedule_hours"]').value),
-                    pause_during_iteration: document.querySelector('[data-setting="autonomous_testing.pause_during_iteration"]').classList.contains('active')
-                },
-                forge_builder: {
-                    email_driven: document.querySelector('[data-setting="forge_builder.email_driven"]').classList.contains('active'),
-                    auto_deploy: document.querySelector('[data-setting="forge_builder.auto_deploy"]').classList.contains('active'),
-                    wait_for_tests: document.querySelector('[data-setting="forge_builder.wait_for_tests"]').classList.contains('active')
-                },
-                backend: {}
-            };
-            
-            // Only include non-empty backend fields (don't overwrite with blanks)
-            const openaiKey = document.getElementById('openai-key').value.trim();
-            const gmailUser = document.getElementById('gmail-user').value.trim();
-            const githubToken = document.getElementById('github-token').value.trim();
-            const githubRepo = document.getElementById('github-repo').value.trim();
-            const liveUrl = document.getElementById('live-url').value.trim();
-            
-            if (openaiKey) settings.backend.openai_api_key = openaiKey;
-            if (gmailUser) settings.backend.gmail_user = gmailUser;
-            if (githubToken) settings.backend.github_token = githubToken;
-            if (githubRepo) settings.backend.github_repo = githubRepo;
-            if (liveUrl) settings.backend.live_url = liveUrl;
-            
-            // Show what will be updated
-            const updateMessage = Object.keys(settings.backend).length > 0 
-                ? `Updating ${Object.keys(settings.backend).length} backend field(s)` 
-                : 'No backend fields changed (blank fields keep existing values)';
-            
-            showModal('Settings saved! ' + updateMessage, JSON.stringify(settings, null, 2));
-            
-            // Clear input fields after save
-            document.getElementById('openai-key').value = '';
-            document.getElementById('gmail-user').value = '';
-            document.getElementById('github-token').value = '';
-            document.getElementById('github-repo').value = '';
-            document.getElementById('live-url').value = '';
-            
-            // Update status indicators
-            loadBackendStatus();
-        }
-        
-        function showModal(title, content) {
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;';
-            modal.innerHTML = `
-                <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; max-width: 600px; max-height: 80vh; overflow-y: auto;">
-                    <h2 style="margin-bottom: 16px;">${title}</h2>
-                    <pre style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.5;">${content}</pre>
-                    <button class="btn" style="margin-top: 16px; width: 100%;" onclick="this.closest('div').parentElement.remove()">Close</button>
+                    <div class="card">
+                        <div class="card-title">Tests Passed</div>
+                        <div class="card-value">${tests}</div>
+                        <div class="card-label">Phase A: ${tests}/50</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Version</div>
+                        <div class="card-value">${version}</div>
+                        <div class="card-label">${phase} Phase</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Communication</div>
+                        <div class="card-value" style="font-size: 20px;">${commMethod}</div>
+                        <div class="card-label">Auto-routed</div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">🎯 Current Task</div>
+                    <div style="font-size: 15px; color: var(--text-secondary);">${task}</div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">⚡ Quick Actions</div>
+                    <button class="btn btn-pink" onclick="startTest()">▶️ Start Test</button>
+                    <button class="btn" onclick="deployNow()">🚀 Deploy Now</button>
+                    <button class="btn" onclick="skipIteration()">⏭️ Skip Iteration</button>
+                    <button class="btn" onclick="openApp()">📱 Open App</button>
+                    <button class="btn" onclick="showEmailInfo()" style="background:#10b981;">ℹ️ How It Works</button>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">📋 Recent Activity</div>
+                    ${activityHTML || '<div style="color: var(--text-secondary);">No recent activity</div>'}
                 </div>
             `;
-            document.body.appendChild(modal);
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) modal.remove();
-            });
-        }
-        
-        // Toggle switches
-        document.querySelectorAll('.toggle-switch').forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                toggle.classList.toggle('active');
-            });
-        });
-        
-        // Preview
-        function refreshPreview() {
-            const iframe = document.getElementById('preview-iframe');
-            iframe.src = iframe.src.split('?')[0] + '?v=' + Date.now();
-        }
-        
-        function openInNewTab() {
-            window.open('https://jessetprudhomme.github.io/frontlineops-live', '_blank');
-        }
-        
-        // Manual test
-        function runManualTest() {
-            alert('Manual test initiated! Check email for results.');
-        }
-        
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.querySelector('aside');
-        const overlay = document.getElementById('overlay');
-        
-        function toggleMenu() {
-            sidebar.classList.toggle('collapsed');
-            overlay.classList.toggle('active');
-        }
-        
-        // Initialize sidebar state on load
-        function initializeSidebar() {
-            if (window.innerWidth <= 768) {
-                // On mobile: start collapsed
-                sidebar.classList.add('collapsed');
-                overlay.classList.remove('active');
-            } else {
-                // On desktop: start open
-                sidebar.classList.remove('collapsed');
-                overlay.classList.remove('active');
-            }
-        }
-        
-        menuToggle.addEventListener('click', toggleMenu);
-        overlay.addEventListener('click', toggleMenu);
-        
-        // Close menu when nav item clicked on mobile
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.add('collapsed');
-                    overlay.classList.remove('active');
-                }
-            });
-        });
-        
-        // Handle window resize
-        window.addEventListener('resize', initializeSidebar);
-        
-        // Initialize on load
-        initializeSidebar();
-        
-        // Load backend configuration status
-        async function loadBackendStatus() {
-            try {
-                // Check if settings exist in state
-                const response = await fetch('state.json?_=' + Date.now());
-                const state = await response.json();
-                
-                // For now, use hardcoded known values
-                // In production, these would come from backend API
-                const backendConfig = {
-                    openai_api_key: ''OPENAI_KEY_CONFIGURED_BUT_HIDDEN'',
-                    gmail_user: 'jesse.t.prudhomme@gmail.com',
-                    github_token: 'ghp_...', // Placeholder
-                    github_repo: 'jessetprudhomme/frontlineops-live',
-                    live_url: 'https://jessetprudhomme.github.io/frontlineops-live'
-                };
-                
-                // Update status indicators
-                updateStatusIndicator('openai-status', backendConfig.openai_api_key);
-                updateStatusIndicator('gmail-status', backendConfig.gmail_user);
-                updateStatusIndicator('github-token-status', backendConfig.github_token);
-                updateStatusIndicator('github-repo-status', backendConfig.github_repo);
-                updateStatusIndicator('live-url-status', backendConfig.live_url);
-                
-                // Show masked values in placeholders
-                if (backendConfig.openai_api_key) {
-                    document.getElementById('openai-key').placeholder = 'Configured: ' + maskValue(backendConfig.openai_api_key);
-                }
-                if (backendConfig.gmail_user) {
-                    document.getElementById('gmail-user').placeholder = 'Current: ' + backendConfig.gmail_user;
-                }
-                if (backendConfig.github_token) {
-                    document.getElementById('github-token').placeholder = 'Configured: ' + maskValue(backendConfig.github_token);
-                }
-                if (backendConfig.github_repo) {
-                    document.getElementById('github-repo').placeholder = 'Current: ' + backendConfig.github_repo;
-                }
-                if (backendConfig.live_url) {
-                    document.getElementById('live-url').placeholder = 'Current: ' + backendConfig.live_url;
-                }
-            } catch (error) {
-                console.error('Failed to load backend status:', error);
-            }
-        }
-        
-        function updateStatusIndicator(elementId, value) {
-            const indicator = document.getElementById(elementId);
-            if (!indicator) return;
             
-            if (value && value !== '' && !value.includes('...')) {
-                indicator.textContent = '✅'; // Green check
-                indicator.style.color = 'var(--accent-green)';
-            } else {
-                indicator.textContent = '❌'; // Red X
-                indicator.style.color = 'var(--accent-red)';
+            updateTimestamp();
+        }
+        
+        function updateTimestamp() {
+            if (lastUpdate) {
+                const age = Math.round((Date.now() - lastUpdate) / 1000);
+                const nextRefresh = CONFIG.refreshInterval / 1000 - (age % (CONFIG.refreshInterval / 1000));
+                document.getElementById('timestamp').textContent = 
+                    `Last updated: ${lastUpdate.toLocaleTimeString()} (${age}s ago) • Next refresh in ${nextRefresh}s`;
             }
         }
         
-        function maskValue(value) {
-            if (!value || value.length < 10) return '***';
-            return value.substring(0, 7) + '...' + value.substring(value.length - 4);
+        // Command functions
+        function startTest() {
+            showModal('Start Test', 'Start automated test Phase A?', () => {
+                sendCommand({
+                    action: 'START_TEST',
+                    timestamp: new Date().toISOString(),
+                    phase: 'A'
+                });
+            });
         }
+        
+        function deployNow() {
+            showModal('Deploy Now', 'Deploy current version to GitHub Pages?', () => {
+                sendCommand({
+                    action: 'DEPLOY',
+                    timestamp: new Date().toISOString()
+                });
+            });
+        }
+        
+        function skipIteration() {
+            const current = state?.iteration?.current || 0;
+            showModal('Skip Iteration', `Skip iteration ${current} and move to ${current + 1}?`, () => {
+                sendCommand({
+                    action: 'SKIP_ITERATION',
+                    timestamp: new Date().toISOString(),
+                    current: current
+                });
+            });
+        }
+        
+        function openApp() {
+            window.open(`https://${CONFIG.github.user}.github.io/${CONFIG.github.repo}/frontlineops.html`, '_blank');
+        }
+        
+        function connectGitHub() {
+            const token = prompt('Enter GitHub Personal Access Token\n(Create at github.com/settings/tokens)\n\nNeeds: repo, workflow permissions');
+            if (token && token.startsWith('ghp_')) {
+                localStorage.setItem('github_token', token);
+                githubToken = token;
+                showNotification('GitHub connected! ✅', 'success');
+                updateUI();
+            }
+        }
+        
+        // Modal functions
+        function showModal(title, body, onConfirm) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').textContent = body;
+            document.getElementById('modalConfirm').onclick = () => {
+                closeModal();
+                onConfirm();
+            };
+            document.getElementById('commandModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('commandModal').classList.remove('active');
+        }
+        
+        function showEmailInfo() {
+            showModal('How Commands Work', 
+                'Commands are sent via email to your Forge backend.\n\n' +
+                '1. Click any action button\n' +
+                '2. Email opens with command\n' +
+                '3. Send the email\n' +
+                '4. Forge processes (~60 seconds)\n' +
+                '5. Hub auto-refreshes with result\n\n' +
+                'Simple, reliable, works everywhere!',
+                () => closeModal()
+            );
+        }
+        
+        // Notification
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+        
+        function showError(message) {
+            document.getElementById('content').innerHTML = `
+                <div style="background: var(--danger); color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    ❌ Error loading data: ${message}<br><br>
+                    <button class="btn" onclick="fetchState()">Retry</button>
+                </div>
+            `;
+        }
+        
+        // Version badge click
+        document.getElementById('versionBadge').addEventListener('click', function() {
+            if (state && state.last_updated) {
+                const date = new Date(state.last_updated);
+                const original = this.textContent;
+                this.textContent = date.toLocaleString('en-US', {
+                    month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+                setTimeout(() => { this.textContent = original; }, 3000);
+            }
+        });
+        
+        // Initialize
+        fetchState();
+        setInterval(fetchState, CONFIG.refreshInterval);
+        setInterval(updateTimestamp, 1000);
+        
+        console.log('🔨 Forge Hub initialized');
+        console.log('Communication mode:', githubToken ? 'GitHub (fast)' : 'Email (fallback)');
     </script>
 </body>
 </html>
+
