@@ -116,7 +116,7 @@
   "blockers": [],
   "preview_url": "frontlineops.html",
   "git_initialized": true,
-  "last_updated": "2026-01-03T16:38:16.398201Z",
+  "last_updated": "2026-01-03T16:41:58.714394Z",
   "build_log": [
     {
       "time": "2026-01-02T18:52:00Z",
@@ -249,6 +249,10 @@
     {
       "time": "2026-01-03T16:38:16.398197Z",
       "event": "\ud83e\udd16 Autonomous Tester + Coordinator system initialized"
+    },
+    {
+      "time": "2026-01-03T16:41:58.714363Z",
+      "event": "\ud83d\udd11 OpenAI API key configured - GPT-4 Vision enabled"
     }
   ],
   "online_urls": {
@@ -285,8 +289,8 @@
       "schedule_hours": 6,
       "pause_during_iteration": true,
       "email_on_failure_only": true,
-      "use_gpt4": false,
-      "openai_api_key_set": false
+      "use_gpt4": true,
+      "openai_api_key_set": true
     },
     "forge_builder": {
       "enabled": true,
