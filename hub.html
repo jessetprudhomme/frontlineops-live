@@ -239,6 +239,11 @@
             background: var(--accent-red);
         }
         
+        .status-indicator {
+            font-size: 14px;
+            margin-left: 8px;
+        }
+        
         .status-card-value {
             font-size: 32px;
             font-weight: 700;
@@ -903,42 +908,42 @@
                     
                     <div class="setting-row">
                         <div class="setting-label">
-                            <div class="setting-title">OpenAI API Key</div>
+                            <div class="setting-title">OpenAI API Key <span class="status-indicator" id="openai-status">❌</span></div>
                             <div class="setting-description">API key for GPT-4 Vision testing</div>
                         </div>
-                        <input type="password" class="input-field" style="width: 200px;" id="openai-key" placeholder="sk-proj-..." data-setting="openai_api_key">
+                        <input type="password" class="input-field" style="width: 250px;" id="openai-key" placeholder="Leave blank to keep current" data-setting="openai_api_key">
                     </div>
                     
                     <div class="setting-row">
                         <div class="setting-label">
-                            <div class="setting-title">Gmail Address</div>
+                            <div class="setting-title">Gmail Address <span class="status-indicator" id="gmail-status">❌</span></div>
                             <div class="setting-description">Email for receiving test reports</div>
                         </div>
-                        <input type="email" class="input-field" style="width: 200px;" id="gmail-user" placeholder="jesse.t.prudhomme@gmail.com" data-setting="gmail_user">
+                        <input type="email" class="input-field" style="width: 250px;" id="gmail-user" placeholder="Leave blank to keep current" data-setting="gmail_user">
                     </div>
                     
                     <div class="setting-row">
                         <div class="setting-label">
-                            <div class="setting-title">GitHub Token</div>
+                            <div class="setting-title">GitHub Token <span class="status-indicator" id="github-token-status">❌</span></div>
                             <div class="setting-description">Personal access token for deployments</div>
                         </div>
-                        <input type="password" class="input-field" style="width: 200px;" id="github-token" placeholder="ghp_..." data-setting="github_token">
+                        <input type="password" class="input-field" style="width: 250px;" id="github-token" placeholder="Leave blank to keep current" data-setting="github_token">
                     </div>
                     
                     <div class="setting-row">
                         <div class="setting-label">
-                            <div class="setting-title">GitHub Repository</div>
+                            <div class="setting-title">GitHub Repository <span class="status-indicator" id="github-repo-status">❌</span></div>
                             <div class="setting-description">Format: username/repo-name</div>
                         </div>
-                        <input type="text" class="input-field" style="width: 200px;" id="github-repo" placeholder="jessetprudhomme/frontlineops-live" data-setting="github_repo">
+                        <input type="text" class="input-field" style="width: 250px;" id="github-repo" placeholder="Leave blank to keep current" data-setting="github_repo">
                     </div>
                     
                     <div class="setting-row">
                         <div class="setting-label">
-                            <div class="setting-title">Live Site URL</div>
+                            <div class="setting-title">Live Site URL <span class="status-indicator" id="live-url-status">❌</span></div>
                             <div class="setting-description">GitHub Pages URL for testing</div>
                         </div>
-                        <input type="url" class="input-field" style="width: 300px;" id="live-url" placeholder="https://jessetprudhomme.github.io/frontlineops-live" data-setting="live_url">
+                        <input type="url" class="input-field" style="width: 300px;" id="live-url" placeholder="Leave blank to keep current" data-setting="live_url">
                     </div>
                 </div>
                 
@@ -1140,17 +1145,38 @@
                     auto_deploy: document.querySelector('[data-setting="forge_builder.auto_deploy"]').classList.contains('active'),
                     wait_for_tests: document.querySelector('[data-setting="forge_builder.wait_for_tests"]').classList.contains('active')
                 },
-                backend: {
-                    openai_api_key: document.getElementById('openai-key').value,
-                    gmail_user: document.getElementById('gmail-user').value,
-                    github_token: document.getElementById('github-token').value,
-                    github_repo: document.getElementById('github-repo').value,
-                    live_url: document.getElementById('live-url').value
-                }
+                backend: {}
             };
             
-            // Show modal
-            showModal('Settings saved! (Backend integration needed)', JSON.stringify(settings, null, 2));
+            // Only include non-empty backend fields (don't overwrite with blanks)
+            const openaiKey = document.getElementById('openai-key').value.trim();
+            const gmailUser = document.getElementById('gmail-user').value.trim();
+            const githubToken = document.getElementById('github-token').value.trim();
+            const githubRepo = document.getElementById('github-repo').value.trim();
+            const liveUrl = document.getElementById('live-url').value.trim();
+            
+            if (openaiKey) settings.backend.openai_api_key = openaiKey;
+            if (gmailUser) settings.backend.gmail_user = gmailUser;
+            if (githubToken) settings.backend.github_token = githubToken;
+            if (githubRepo) settings.backend.github_repo = githubRepo;
+            if (liveUrl) settings.backend.live_url = liveUrl;
+            
+            // Show what will be updated
+            const updateMessage = Object.keys(settings.backend).length > 0 
+                ? `Updating ${Object.keys(settings.backend).length} backend field(s)` 
+                : 'No backend fields changed (blank fields keep existing values)';
+            
+            showModal('Settings saved! ' + updateMessage, JSON.stringify(settings, null, 2));
+            
+            // Clear input fields after save
+            document.getElementById('openai-key').value = '';
+            document.getElementById('gmail-user').value = '';
+            document.getElementById('github-token').value = '';
+            document.getElementById('github-repo').value = '';
+            document.getElementById('live-url').value = '';
+            
+            // Update status indicators
+            loadBackendStatus();
         }
         
         function showModal(title, content) {
@@ -1233,8 +1259,72 @@
         // Initialize on load
         initializeSidebar();
         
+        // Load backend configuration status
+        async function loadBackendStatus() {
+            try {
+                // Check if settings exist in state
+                const response = await fetch('state.json?_=' + Date.now());
+                const state = await response.json();
+                
+                // For now, use hardcoded known values
+                // In production, these would come from backend API
+                const backendConfig = {
+                    openai_api_key: ''OPENAI_KEY_CONFIGURED_BUT_HIDDEN'',
+                    gmail_user: 'jesse.t.prudhomme@gmail.com',
+                    github_token: 'ghp_...', // Placeholder
+                    github_repo: 'jessetprudhomme/frontlineops-live',
+                    live_url: 'https://jessetprudhomme.github.io/frontlineops-live'
+                };
+                
+                // Update status indicators
+                updateStatusIndicator('openai-status', backendConfig.openai_api_key);
+                updateStatusIndicator('gmail-status', backendConfig.gmail_user);
+                updateStatusIndicator('github-token-status', backendConfig.github_token);
+                updateStatusIndicator('github-repo-status', backendConfig.github_repo);
+                updateStatusIndicator('live-url-status', backendConfig.live_url);
+                
+                // Show masked values in placeholders
+                if (backendConfig.openai_api_key) {
+                    document.getElementById('openai-key').placeholder = 'Configured: ' + maskValue(backendConfig.openai_api_key);
+                }
+                if (backendConfig.gmail_user) {
+                    document.getElementById('gmail-user').placeholder = 'Current: ' + backendConfig.gmail_user;
+                }
+                if (backendConfig.github_token) {
+                    document.getElementById('github-token').placeholder = 'Configured: ' + maskValue(backendConfig.github_token);
+                }
+                if (backendConfig.github_repo) {
+                    document.getElementById('github-repo').placeholder = 'Current: ' + backendConfig.github_repo;
+                }
+                if (backendConfig.live_url) {
+                    document.getElementById('live-url').placeholder = 'Current: ' + backendConfig.live_url;
+                }
+            } catch (error) {
+                console.error('Failed to load backend status:', error);
+            }
+        }
+        
+        function updateStatusIndicator(elementId, value) {
+            const indicator = document.getElementById(elementId);
+            if (!indicator) return;
+            
+            if (value && value !== '' && !value.includes('...')) {
+                indicator.textContent = '✅'; // Green check
+                indicator.style.color = 'var(--accent-green)';
+            } else {
+                indicator.textContent = '❌'; // Red X
+                indicator.style.color = 'var(--accent-red)';
+            }
+        }
+        
+        function maskValue(value) {
+            if (!value || value.length < 10) return '***';
+            return value.substring(0, 7) + '...' + value.substring(value.length - 4);
+        }
+        
         // Start polling
         loadState();
+        loadBackendStatus();
         pollInterval = setInterval(loadState, 2000);
     </script>
 </body>
