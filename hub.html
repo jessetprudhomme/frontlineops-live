@@ -988,20 +988,41 @@
         let state = null;
         let pollInterval = null;
         
-        // Navigation
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const view = btn.dataset.view;
-                
-                // Update nav
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // Update view
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.getElementById(view).classList.add('active');
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', initializeApp);
+        
+        function initializeApp() {
+            console.log('🚀 Initializing Forge Hub...');
+            
+            // Navigation
+            const navButtons = document.querySelectorAll('.nav-btn');
+            console.log(`Found ${navButtons.length} navigation buttons`);
+            
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.view;
+                    console.log('Switching to view:', view);
+                    
+                    // Update nav
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update view
+                    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                    const targetView = document.getElementById(view);
+                    if (targetView) {
+                        targetView.classList.add('active');
+                    } else {
+                        console.error('View not found:', view);
+                    }
+                });
             });
-        });
+            
+            // Start app
+            loadState();
+            loadBackendStatus();
+            pollInterval = setInterval(loadState, 2000);
+        }
         
         // Load state
         async function loadState() {
@@ -1323,11 +1344,6 @@
             if (!value || value.length < 10) return '***';
             return value.substring(0, 7) + '...' + value.substring(value.length - 4);
         }
-        
-        // Start polling
-        loadState();
-        loadBackendStatus();
-        pollInterval = setInterval(loadState, 2000);
     </script>
 </body>
 </html>
