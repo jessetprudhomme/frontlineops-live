@@ -37,9 +37,9 @@
   "autonomous_fixes": [],
   "design_decisions": [],
   "blockers": [],
-  "preview_url": "computer:///mnt/user-data/outputs/frontlineops/index.html",
+  "preview_url": "frontlineops.html",
   "git_initialized": true,
-  "last_updated": "2026-01-03T15:44:44.648948Z",
+  "last_updated": "2026-01-03T15:52:21.725599Z",
   "build_log": [
     {
       "time": "2026-01-02T18:52:00Z",
@@ -112,6 +112,10 @@
     {
       "time": "2026-01-03T15:44:44.648906Z",
       "event": "\ud83d\udd27 FORGE HUB FIXED - State file path corrected, auto-refresh working"
+    },
+    {
+      "time": "2026-01-03T15:52:21.725574Z",
+      "event": "\ud83d\udd27 Preview URL updated to point to deployed app"
     }
   ],
   "online_urls": {
