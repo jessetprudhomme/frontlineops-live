@@ -14,8 +14,8 @@
   },
   "forge_status": {
     "active": true,
-    "current_task": "Deployment system operational - auto-deploy working",
-    "last_activity": "2026-01-03T19:57:21.395530+00:00",
+    "current_task": "Desktop sidebar fixed - visible on all screens",
+    "last_activity": "2026-01-03T20:00:34.304716+00:00",
     "locked_by": null,
     "locked_at": null
   },
@@ -130,7 +130,7 @@
   "blockers": [],
   "preview_url": "frontlineops.html",
   "git_initialized": true,
-  "last_updated": "2026-01-03T19:57:21.395533+00:00",
+  "last_updated": "2026-01-03T20:00:34.304725+00:00",
   "build_log": [
     {
       "time": "2026-01-02T18:52:00Z",
@@ -299,6 +299,10 @@
     {
       "timestamp": "2026-01-03T19:57:21.395497+00:00",
       "event": "\ud83d\udd27 DEPLOYMENT FIXED - GitHub auth working, all files deployed successfully"
+    },
+    {
+      "timestamp": "2026-01-03T20:00:34.304669+00:00",
+      "event": "\ud83d\udda5\ufe0f DESKTOP FIX - Sidebar now visible on desktop, mobile menu still works"
     }
   ],
   "online_urls": {
