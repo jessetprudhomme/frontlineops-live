@@ -14,8 +14,8 @@
   },
   "forge_status": {
     "active": true,
-    "current_task": "Mobile-optimized Forge Hub deployed",
-    "last_activity": "2026-01-03T19:14:11.266684Z",
+    "current_task": "Mobile fixes + Backend settings deployed",
+    "last_activity": "2026-01-03T19:25:32.293564+00:00",
     "locked_by": null,
     "locked_at": null
   },
@@ -116,7 +116,7 @@
   "blockers": [],
   "preview_url": "frontlineops.html",
   "git_initialized": true,
-  "last_updated": "2026-01-03T19:14:11.266701Z",
+  "last_updated": "2026-01-03T19:25:32.293567+00:00",
   "build_log": [
     {
       "time": "2026-01-02T18:52:00Z",
@@ -257,6 +257,14 @@
     {
       "timestamp": "2026-01-03T19:14:11.266596Z",
       "event": "\ud83d\udcf1 Mobile UI optimized - Collapsible sidebar with hamburger menu"
+    },
+    {
+      "timestamp": "2026-01-03T19:25:32.293528+00:00",
+      "event": "\ud83d\udd27 Fixed: Mobile menu now starts collapsed on page load"
+    },
+    {
+      "timestamp": "2026-01-03T19:25:32.293559+00:00",
+      "event": "\u2699\ufe0f Added: Backend configuration fields (API keys, URLs, tokens)"
     }
   ],
   "online_urls": {
