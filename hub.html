@@ -54,6 +54,17 @@
             gap: 12px;
         }
         
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            line-height: 1;
+        }
+        
         .logo { font-size: 20px; font-weight: 700; }
         
         .version-badge {
@@ -83,6 +94,11 @@
             border-right: 1px solid var(--border);
             padding: 16px 0;
             overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        aside.collapsed {
+            transform: translateX(-100%);
         }
         
         .nav-section {
@@ -505,17 +521,88 @@
             background: var(--bg-tertiary);
             color: var(--text-primary);
         }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            aside {
+                position: fixed;
+                left: 0;
+                top: 60px;
+                bottom: 0;
+                width: 280px;
+                z-index: 1000;
+                box-shadow: 2px 0 12px rgba(0, 0, 0, 0.5);
+            }
+            
+            aside.collapsed {
+                transform: translateX(-100%);
+            }
+            
+            main {
+                padding: 16px;
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .coordination-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-container {
+                height: calc(100vh - 300px);
+            }
+            
+            .logo {
+                font-size: 16px;
+            }
+            
+            .version-badge {
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+        }
+        
+        /* Overlay for mobile menu */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                ☰
+            </button>
             <div class="logo-section">
                 <div class="logo">⚡ Forge Hub</div>
                 <div class="version-badge" id="version">V6.2.8</div>
                 <div class="status-dot"></div>
             </div>
         </header>
+        
+        <div class="overlay" id="overlay"></div>
         
         <aside>
             <nav>
@@ -1005,6 +1092,31 @@
         // Manual test
         function runManualTest() {
             alert('Manual test initiated! Check email for results.');
+        }
+        
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.querySelector('aside');
+        const overlay = document.getElementById('overlay');
+        
+        function toggleMenu() {
+            sidebar.classList.toggle('collapsed');
+            overlay.classList.toggle('active');
+        }
+        
+        menuToggle.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+        
+        // Close menu when nav item clicked on mobile
+        if (window.innerWidth <= 768) {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.add('collapsed');
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
         }
         
         // Start polling
