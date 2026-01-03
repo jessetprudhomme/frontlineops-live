@@ -15,7 +15,9 @@
   "forge_status": {
     "active": true,
     "current_task": "\ud83d\ude80 Deploying V6.2.8 with email feedback fixes",
-    "last_activity": "2026-01-03T15:59:33.541610Z"
+    "last_activity": "2026-01-03T15:59:33.541610Z",
+    "locked_by": null,
+    "locked_at": null
   },
   "tests": {
     "phase_a": {
@@ -114,7 +116,7 @@
   "blockers": [],
   "preview_url": "frontlineops.html",
   "git_initialized": true,
-  "last_updated": "2026-01-03T16:11:36.019321Z",
+  "last_updated": "2026-01-03T16:38:16.398201Z",
   "build_log": [
     {
       "time": "2026-01-02T18:52:00Z",
@@ -243,6 +245,10 @@
     {
       "time": "2026-01-03T16:11:36.019318Z",
       "event": "\ud83d\udce7 Email-driven iteration successful - deploying to live site"
+    },
+    {
+      "time": "2026-01-03T16:38:16.398197Z",
+      "event": "\ud83e\udd16 Autonomous Tester + Coordinator system initialized"
     }
   ],
   "online_urls": {
@@ -257,5 +263,36 @@
     "live_url": "https://jessetprudhomme.github.io/frontlineops-live",
     "auto_deploy": true,
     "last_deployed": "2026-01-03T15:11:38.321318Z"
+  },
+  "test_status": {
+    "state": "idle",
+    "locked_by": null,
+    "locked_at": null,
+    "last_run": null,
+    "next_scheduled": "2026-01-03T22:38:16.398154Z",
+    "issues_pending": [],
+    "enabled": true,
+    "schedule_hours": 6
+  },
+  "coordination": {
+    "active_process": null,
+    "queue": [],
+    "last_sync": "2026-01-03T16:38:16.398189Z"
+  },
+  "settings": {
+    "autonomous_testing": {
+      "enabled": true,
+      "schedule_hours": 6,
+      "pause_during_iteration": true,
+      "email_on_failure_only": true,
+      "use_gpt4": false,
+      "openai_api_key_set": false
+    },
+    "forge_builder": {
+      "enabled": true,
+      "email_driven": true,
+      "auto_deploy": true,
+      "wait_for_tests": true
+    }
   }
 }
