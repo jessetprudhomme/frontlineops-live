@@ -6,15 +6,15 @@
     "forge_identity": "Forge"
   },
   "iteration": {
-    "current": 1,
+    "current": 2,
     "max": 20,
     "phase": "INIT",
-    "status": "mvp_complete",
+    "status": "building",
     "autonomous_mode": true
   },
   "forge_status": {
     "active": true,
-    "current_task": "MVP Complete - Ready for preview",
+    "current_task": "Building iteration 2: Adding enhancements",
     "last_activity": "2026-01-02T18:59:26.192615Z"
   },
   "tests": {
@@ -39,7 +39,7 @@
   "blockers": [],
   "preview_url": "computer:///mnt/user-data/outputs/frontlineops/index.html",
   "git_initialized": true,
-  "last_updated": "2026-01-02T19:27:29.977250Z",
+  "last_updated": "2026-01-03T15:24:04.321244Z",
   "build_log": [
     {
       "time": "2026-01-02T18:52:00Z",
@@ -92,11 +92,31 @@
     {
       "time": "2026-01-02T19:27:29.977224Z",
       "event": "Online URLs generated - Live preview available"
+    },
+    {
+      "time": "2026-01-03T15:11:38.321357Z",
+      "event": "Automated deployment configured"
+    },
+    {
+      "time": "2026-01-03T15:11:38.321361Z",
+      "event": "Live site deployed to GitHub Pages"
+    },
+    {
+      "time": "2026-01-03T15:24:04.318931Z",
+      "event": "Iteration 2 started: Adding cost legend and UI improvements"
     }
   ],
   "online_urls": {
     "landing": "https://www.genspark.ai/api/files/s/JQoSsMfc",
     "hub": "https://www.genspark.ai/api/files/s/KxkhXCkX",
     "frontlineops": "https://www.genspark.ai/api/files/s/Xn2M1kMf"
+  },
+  "deployment": {
+    "enabled": true,
+    "platform": "GitHub Pages",
+    "repo": "jessetprudhomme/frontlineops-live",
+    "live_url": "https://jessetprudhomme.github.io/frontlineops-live",
+    "auto_deploy": true,
+    "last_deployed": "2026-01-03T15:11:38.321318Z"
   }
 }
