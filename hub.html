@@ -686,7 +686,7 @@
         // Load state from JSON
         async function loadState() {
             try {
-                const response = await fetch('../hub-state.json?_=' + Date.now());
+                const response = await fetch('state.json?_=' + Date.now());
                 state = await response.json();
                 updateUI();
             } catch (error) {
@@ -914,3 +914,4 @@
     </script>
 </body>
 </html>
+       
