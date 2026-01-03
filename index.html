@@ -5,44 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FrontlineOps V6.2.1 - Live Build</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0a0e17;
-            color: #e8eaed;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #fff;
         }
         .nav {
-            background: #151923;
-            border-bottom: 2px solid #2a3447;
-            padding: 12px 24px;
+            background: linear-gradient(135deg, #1a1f36 0%, #0d1117 100%);
+            padding: 15px 30px;
             display: flex;
-            gap: 12px;
+            gap: 20px;
             align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border-bottom: 1px solid #30363d;
         }
         .nav a {
-            color: #9aa0b0;
+            color: #8b949e;
             text-decoration: none;
             padding: 8px 16px;
             border-radius: 6px;
-            font-weight: 500;
             transition: all 0.2s;
+            font-weight: 500;
         }
         .nav a:hover {
-            background: #1e2433;
-            color: #e8eaed;
+            background: rgba(56, 139, 253, 0.1);
+            color: #58a6ff;
         }
         .nav a.active {
-            background: #2196f3;
-            color: white;
+            background: #388bfd;
+            color: #fff;
         }
         .version {
             margin-left: auto;
-            color: #6c757d;
-            font-size: 14px;
+            padding: 6px 12px;
+            background: #161b22;
+            border-radius: 6px;
+            font-size: 13px;
+            border: 1px solid #30363d;
         }
-        .version .code {
-            color: #2196f3;
+        .code {
+            color: #7ee787;
             font-weight: 600;
         }
         iframe {
@@ -54,12 +61,19 @@
 </head>
 <body>
     <div class="nav">
-        <a href="frontlineops.html" class="active">🏗️ FrontlineOps</a>
+        <a href="index.html" class="active">🏗️ FrontlineOps</a>
         <a href="hub.html">🔧 Forge Hub</a>
         <span class="version">
             <span class="code">V6.2.1</span> | Iteration 2
         </span>
     </div>
-    <iframe src="frontlineops.html"></iframe>
+    <iframe src="frontlineops.html" id="mainFrame"></iframe>
+    <script>
+        // Auto-reload iframe every 30 seconds to catch updates
+        setInterval(() => {
+            const frame = document.getElementById('mainFrame');
+            frame.src = frame.src;
+        }, 30000);
+    </script>
 </body>
 </html>
