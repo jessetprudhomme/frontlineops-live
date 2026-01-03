@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forge Collaboration Hub | FrontlineOps V6.2.8</title>
+    <title>Forge Collaboration Hub | FrontlineOps V6.3.1</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -97,8 +97,9 @@
             transition: transform 0.3s ease;
         }
         
+        /* Desktop: sidebar always visible */
         aside.collapsed {
-            transform: translateX(-100%);
+            transform: none;
         }
         
         .nav-section {
@@ -558,6 +559,7 @@
                 box-shadow: 2px 0 12px rgba(0, 0, 0, 0.5);
             }
             
+            /* On mobile: collapsed means hidden */
             aside.collapsed {
                 transform: translateX(-100%);
             }
@@ -613,14 +615,14 @@
             </button>
             <div class="logo-section">
                 <div class="logo">⚡ Forge Hub</div>
-                <div class="version-badge" id="version">V6.2.8</div>
+                <div class="version-badge" id="version">V6.3.1</div>
                 <div class="status-dot"></div>
             </div>
         </header>
         
         <div class="overlay" id="overlay"></div>
         
-        <aside class="collapsed">
+        <aside id="sidebar">
             <nav>
                 <div class="nav-section">
                     <div class="nav-section-title">Monitoring</div>
