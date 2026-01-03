@@ -2,14 +2,14 @@
   "version": {
     "ops": "1.7",
     "app": "6.2",
-    "code": "6.2.0",
+    "code": "6.2.1",
     "forge_identity": "Forge"
   },
   "iteration": {
     "current": 2,
     "max": 20,
     "phase": "INIT",
-    "status": "building",
+    "status": "deploying",
     "autonomous_mode": true
   },
   "forge_status": {
@@ -39,7 +39,7 @@
   "blockers": [],
   "preview_url": "computer:///mnt/user-data/outputs/frontlineops/index.html",
   "git_initialized": true,
-  "last_updated": "2026-01-03T15:24:04.321244Z",
+  "last_updated": "2026-01-03T15:26:01.821722Z",
   "build_log": [
     {
       "time": "2026-01-02T18:52:00Z",
@@ -104,6 +104,10 @@
     {
       "time": "2026-01-03T15:24:04.318931Z",
       "event": "Iteration 2 started: Adding cost legend and UI improvements"
+    },
+    {
+      "time": "2026-01-03T15:26:01.821691Z",
+      "event": "CODE_V6.2.1 complete - deploying to live site"
     }
   ],
   "online_urls": {
