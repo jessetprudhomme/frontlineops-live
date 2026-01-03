@@ -604,7 +604,6 @@
         
         .overlay.active {
             display: block;
-        }
     </style>
 </head>
 <body>
@@ -615,11 +614,12 @@
             </button>
             <div class="logo-section">
                 <div class="logo">⚡ Forge Hub</div>
-                <div class="version-badge" id="version">V6.3.1</div>
+                <div class="version-badge" id="versionBadge" title="Click to see last update">
+                    V6.3.1
+                </div>
                 <div class="status-dot"></div>
             </div>
         </header>
-        
         <div class="overlay" id="overlay"></div>
         
         <aside id="sidebar">
@@ -984,45 +984,119 @@
         </main>
     </div>
     
+    
     <script>
         let state = null;
         let pollInterval = null;
         
-        // Wait for DOM to be ready
-        document.addEventListener('DOMContentLoaded', initializeApp);
-        
-        function initializeApp() {
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Initializing Forge Hub...');
             
-            // Navigation
+            // Get DOM elements
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.querySelector('aside');
+            const overlay = document.getElementById('overlay');
             const navButtons = document.querySelectorAll('.nav-btn');
+            const versionBadge = document.getElementById('versionBadge');
+            
             console.log(`Found ${navButtons.length} navigation buttons`);
             
+            // Update version badge with timestamp on click
+            if (versionBadge) {
+                versionBadge.style.cursor = 'pointer';
+                let showingTimestamp = false;
+                versionBadge.addEventListener('click', async function() {
+                    if (!showingTimestamp) {
+                        try {
+                            const response = await fetch('state.json?_=' + Date.now());
+                            const data = await response.json();
+                            const lastUpdate = data.last_updated || data.deployment?.last_deployed;
+                            if (lastUpdate) {
+                                const date = new Date(lastUpdate);
+                                versionBadge.textContent = date.toLocaleString('en-US', {
+                                    month: 'short', day: 'numeric', 
+                                    hour: '2-digit', minute: '2-digit'
+                                });
+                                showingTimestamp = true;
+                                setTimeout(() => {
+                                    versionBadge.textContent = 'V6.3.1';
+                                    showingTimestamp = false;
+                                }, 3000);
+                            }
+                        } catch(e) {
+                            console.error('Failed to load timestamp:', e);
+                        }
+                    }
+                });
+            }
+            
+            // Navigation view switching
             navButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const view = btn.dataset.view;
-                    console.log('Switching to view:', view);
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     
-                    // Update nav
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    const view = btn.dataset.view;
+                    console.log('🎯 Switching to view:', view);
+                    
+                    // Update active nav button
+                    navButtons.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     
-                    // Update view
+                    // Update active view
                     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
                     const targetView = document.getElementById(view);
                     if (targetView) {
                         targetView.classList.add('active');
+                        console.log('✅ View switched to:', view);
                     } else {
-                        console.error('View not found:', view);
+                        console.error('❌ View not found:', view);
+                    }
+                    
+                    // Close mobile menu if open
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.add('collapsed');
+                        overlay.classList.remove('active');
                     }
                 });
             });
+            
+            // Mobile menu toggle
+            function toggleMenu() {
+                sidebar.classList.toggle('collapsed');
+                overlay.classList.toggle('active');
+                console.log('Menu toggled');
+            }
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', toggleMenu);
+            }
+            if (overlay) {
+                overlay.addEventListener('click', toggleMenu);
+            }
+            
+            // Sidebar initialization
+            function initializeSidebar() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.add('collapsed');
+                    overlay.classList.remove('active');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    overlay.classList.remove('active');
+                }
+            }
+            
+            window.addEventListener('resize', initializeSidebar);
+            initializeSidebar();
             
             // Start app
             loadState();
             loadBackendStatus();
             pollInterval = setInterval(loadState, 2000);
-        }
+            
+            console.log('✅ Forge Hub initialized successfully');
+        });
         
         // Load state
         async function loadState() {
